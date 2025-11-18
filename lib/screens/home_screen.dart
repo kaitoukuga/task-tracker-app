@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import 'add_task_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,7 +48,18 @@ class _HomeScreenState extends  State<HomeScreen> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder:  (context) => const AddTaskScreen()),
+          );
+
+          if (result != null) {
+            setState(() {
+              tasks.add(result);
+            });
+          }
+        },
         child: const Icon(Icons.add),
       ),
     );
