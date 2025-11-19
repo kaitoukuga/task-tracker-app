@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/task.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final Task? existingTask;
+
+  const AddTaskScreen({super.key, this.existingTask});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -13,10 +15,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.existingTask != null) {
+      titleController.text = widget.existingTask!.title;
+      descriptionController.text = widget.existingTask!.description;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isEditing = widget.existingTask != null;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New task'),
+        title: Text(isEditing ? 'Edit Task' : 'Add New task'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,11 +65,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   final newTask = Task(
                     title: titleController.text,
                     description: descriptionController.text,
+                    isDone: widget.existingTask?.isDone ?? false,
                   );
 
                   Navigator.pop(context, newTask);
                 },
-                child: const Text('Save Task'),
+                child: Text(isEditing ? 'Update Task' : 'Save Task'),
               ),
             ),
           ],
