@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../models/task.dart';
 import 'add_task_screen.dart';
 
@@ -10,6 +11,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends  State<HomeScreen> {
+  late Box<Task> taskBox;
+
+  @override
+  void initState() {
+    super.initState();
+    taskBox = Hive.box<Task>('tasks');
+  }
   void _editTask(Task task, int index) async {
     final updatedTask = await Navigator.push(
       context,
@@ -21,20 +29,15 @@ class _HomeScreenState extends  State<HomeScreen> {
     );
 
     if (updatedTask != null) {
-      setState(() {
-        tasks[index] = updatedTask;
-      });
+      taskBox.putAt(index, updatedTask);
+      setState(() {});
     }
   }
-  // Dummy Task
-  List<Task> tasks = [
-    Task(title: "Belajar Flutter", description: "Pelajari dasar widget"),
-    Task(title: "Buat UI Task Tracker", description: "Tampilkan list tugas"),
-    Task(title: "Commit ke GitHub", description: "Push project awal"),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final tasks = taskBox.values.toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Tracker'),
@@ -44,6 +47,7 @@ class _HomeScreenState extends  State<HomeScreen> {
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
+
           return Card(
             elevation: 2,
             margin: const EdgeInsets.only(bottom: 12),
@@ -55,9 +59,9 @@ class _HomeScreenState extends  State<HomeScreen> {
                 color: task.isDone ? Colors.green : Colors.grey,
               ),
               onTap: () {
-                setState(() {
-                  task.isDone = !task.isDone;
-                });
+                task.isDone = !task.isDone;
+                taskBox.putAt(index, task);
+                setState(() {});
               },
               onLongPress: () {
                 showModalBottomSheet(
@@ -80,9 +84,8 @@ class _HomeScreenState extends  State<HomeScreen> {
                             title: const Text("Delete Task"),
                             onTap: () {
                               Navigator.pop(context);
-                              setState(() {
-                                tasks.removeAt(index);
-                              });
+                              taskBox.deleteAt(index);
+                              setState(() {});
                             },
                           ),
                         ],
@@ -97,15 +100,14 @@ class _HomeScreenState extends  State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.push(
+          final newTask = await Navigator.push(
             context,
-            MaterialPageRoute(builder:  (context) => const AddTaskScreen()),
+            MaterialPageRoute(builder:  (_) => const AddTaskScreen()),
           );
 
-          if (result != null) {
-            setState(() {
-              tasks.add(result);
-            });
+          if (newTask != null) {
+            taskBox.add(newTask);
+            setState(() {});
           }
         },
         child: const Icon(Icons.add),
