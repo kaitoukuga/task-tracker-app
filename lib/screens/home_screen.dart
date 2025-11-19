@@ -10,6 +10,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends  State<HomeScreen> {
+  void _editTask(Task task, int index) async {
+    final updatedTask = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddTaskScreen(
+          existingTask: task,
+        ),
+      ),
+    );
+
+    if (updatedTask != null) {
+      setState(() {
+        tasks[index] = updatedTask;
+      });
+    }
+  }
   // Dummy Task
   List<Task> tasks = [
     Task(title: "Belajar Flutter", description: "Pelajari dasar widget"),
@@ -42,6 +58,38 @@ class _HomeScreenState extends  State<HomeScreen> {
                 setState(() {
                   task.isDone = !task.isDone;
                 });
+              },
+              onLongPress: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.edit),
+                            title: const Text("Edit Task"),
+                            onTap:() {
+                              Navigator.pop(context);
+                              _editTask(task, index);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete),
+                            title: const Text("Delete Task"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              setState(() {
+                                tasks.removeAt(index);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
               },
             ),
           );
