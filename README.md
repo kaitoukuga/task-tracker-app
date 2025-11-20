@@ -83,7 +83,7 @@ Hive boxes are initialized at app startup.
 1. Clone the repository:
 
 ```
-git clone <your_repo_url>
+git clone https://github.com/kaitoukuga/task-tracker-app.git
 ```
 
 2. Install dependencies:
