@@ -10,6 +10,7 @@ class Task {
   @HiveField(1)
   String description;
   
+  @HiveField(2)
   bool isDone;
 
   Task({

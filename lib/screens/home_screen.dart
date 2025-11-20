@@ -59,9 +59,10 @@ class _HomeScreenState extends  State<HomeScreen> {
                 color: task.isDone ? Colors.green : Colors.grey,
               ),
               onTap: () {
-                task.isDone = !task.isDone;
-                taskBox.putAt(index, task);
-                setState(() {});
+                setState(() {
+                  task.isDone = !task.isDone;
+                  taskBox.putAt(index, task);
+                });
               },
               onLongPress: () {
                 showModalBottomSheet(
