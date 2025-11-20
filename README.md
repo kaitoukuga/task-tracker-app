@@ -141,10 +141,10 @@ This project demonstrates:
 
 ## 👤 Developer
 
-**Fikri Saragih**
+**Fikri Saragih**  
 Junior Developer
 
 ---
 
-Thank you! 🚀
+Thank you! 🚀  
 Happy coding!
